@@ -1,0 +1,16 @@
+#main gitignore
+.DS_Store
+.env
+*.log
+
+
+#django
+__pycache__/
+*.pyc
+db.sqlite3
+/backend/migrations
+staticfiles/
+/backend/venv/
+venv/
+
+#frontend
