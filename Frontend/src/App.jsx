@@ -11,6 +11,8 @@ import SurveyQuestion2Page from './pages/Survey/SurveyQuestion2Page';
 import SurveyQuestion3Page from './pages/Survey/SurveyQuestion3Page';
 import SurveyQuestion4Page from './pages/Survey/SurveyQuestion4Page';
 import SurveyQuestion5Page from './pages/Survey/SurveyQuestion5Page';
+import SurveyAttentionCheckPage from './pages/Survey/SurveyAttentionCheckPage';
+import TaskSuccessPage from './pages/TaskSuccess/TaskSuccessPage';
 
 function App() {
   return (
@@ -32,8 +34,9 @@ function App() {
         <Route path="/survey/3" element={<SurveyQuestion3Page />} />
         <Route path="/survey/4" element={<SurveyQuestion4Page />} />
         <Route path="/survey/5" element={<SurveyQuestion5Page />} />
+        <Route path="/survey/attention-check" element={<SurveyAttentionCheckPage />} />
         
-        
+        <Route path="/task-success" element={<TaskSuccessPage />} />
         
         {/* Catch-all route for 404s (optional but good practice) */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

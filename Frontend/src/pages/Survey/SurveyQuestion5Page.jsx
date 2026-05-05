@@ -16,15 +16,11 @@ const SurveyQuestion5Page = () => {
       alert("Please enter a response before continuing, or click Skip.");
       return;
     }
-    console.log("Step 5 answer:", answer);
-    alert(`Answer saved! \n(Next screen coming soon)`);
-    // navigate('/survey/6');
+    navigate('/survey/attention-check'); // <-- Route to Attention Check
   };
 
   const handleSkip = () => {
-    console.log("User skipped Step 5");
-    // navigate('/survey/6');
-    alert("Skipped!");
+    navigate('/survey/attention-check'); // <-- Route to Attention Check
   };
 
   return (

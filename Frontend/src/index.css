@@ -5,3 +5,24 @@
 body {
   min-height: max(884px, 100dvh);
 }
+
+
+body {
+  @apply bg-background text-on-surface;
+  min-height: 100vh;
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.4s ease-out forwards;
+}
