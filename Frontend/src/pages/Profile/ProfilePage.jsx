@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AppLayout from '../../components/layout/AppLayout';
 import TopAppBar from '../../components/layout/TopAppBar';
-import BottomNavBar from '../../components/layout/BottomNavBar';
 import TextField from '../../components/ui/TextField';
 import SelectField from '../../components/ui/SelectField';
 import RadioToggle from '../../components/ui/RadioToggle';
 
 const ProfilePage = () => {
-  // State management for the profile form
+  const navigate = useNavigate();
+  
   const [profileData, setProfileData] = useState({
     firstName: 'Emmanuel',
     lastName: 'Okonkwo',
@@ -29,24 +31,23 @@ const ProfilePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Connect to backend API to save profile data
     console.log("Saving profile data:", profileData);
   };
 
   return (
-    <div className="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
-      
-      <TopAppBar 
-        title="Profile" 
-        avatarUrl="https://lh3.googleusercontent.com/aida-public/AB6AXuDzML8WN11d4FaTRnytBGRzvjQpYC3x3thj4W1ohXLegCDJSg1PMjgMnltsW-yebhj2K0adrjeTDbkc0_3Hql-7y7LsUofQGfyOnnA3BNOzniVvritFJm5B6ZGkHSw9w6Bi0exxnMg7vQEtvRUWnVQMFAxT9MSMxpHO2PBYq-yYapoJARqDxORGG-Bs1B2bnhliQv4DjhivXVhZ-o92U0KtQzDOD8nU5po0VH1SGPbNzTPibwJ3h0QQanXv2Fq2Vnc3sGuDHl8nTgM" 
-        onBack={() => console.log("Navigate back")}
-      />
-
-      {/* Main Content wrapped in max-w-lg for responsive desktop centering */}
-      <main className="flex-1 mt-16 mb-20 px-4 py-8 max-w-lg mx-auto w-full">
+    <AppLayout 
+      mobileHeader={
+        <TopAppBar 
+          title="Profile" 
+          avatarUrl="https://lh3.googleusercontent.com/aida-public/AB6AXuDzML8WN11d4FaTRnytBGRzvjQpYC3x3thj4W1ohXLegCDJSg1PMjgMnltsW-yebhj2K0adrjeTDbkc0_3Hql-7y7LsUofQGfyOnnA3BNOzniVvritFJm5B6ZGkHSw9w6Bi0exxnMg7vQEtvRUWnVQMFAxT9MSMxpHO2PBYq-yYapoJARqDxORGG-Bs1B2bnhliQv4DjhivXVhZ-o92U0KtQzDOD8nU5po0VH1SGPbNzTPibwJ3h0QQanXv2Fq2Vnc3sGuDHl8nTgM" 
+          onBack={() => navigate(-1)}
+        />
+      }
+    >
+      <div className="max-w-xl mx-auto w-full space-y-8">
         
         {/* Header & Avatar */}
-        <div className="mb-8 text-center">
+        <div className="text-center">
           <div className="relative inline-block">
             <div className="h-24 w-24 rounded-full overflow-hidden border-4 border-white shadow-sm mx-auto">
               <img 
@@ -65,54 +66,19 @@ const ProfilePage = () => {
 
         {/* Form Section */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <TextField 
-            label="First Name" 
-            id="first_name" 
-            value={profileData.firstName} 
-            onChange={(e) => handleUpdateField('firstName', e.target.value)} 
-          />
+          <TextField label="First Name" id="first_name" value={profileData.firstName} onChange={(e) => handleUpdateField('firstName', e.target.value)} />
+          <TextField label="Last Name" id="last_name" value={profileData.lastName} onChange={(e) => handleUpdateField('lastName', e.target.value)} />
           
-          <TextField 
-            label="Last Name" 
-            id="last_name" 
-            value={profileData.lastName} 
-            onChange={(e) => handleUpdateField('lastName', e.target.value)} 
-          />
-
           <RadioToggle 
-            label="Gender"
-            name="gender"
-            options={[
-              { label: 'Male', value: 'male' },
-              { label: 'Female', value: 'female' }
-            ]}
-            selectedValue={profileData.gender}
-            onChange={(val) => handleUpdateField('gender', val)}
+            label="Gender" name="gender" selectedValue={profileData.gender} onChange={(val) => handleUpdateField('gender', val)}
+            options={[ { label: 'Male', value: 'male' }, { label: 'Female', value: 'female' } ]}
           />
 
-          <TextField 
-            label="Date of Birth" 
-            id="dob" 
-            type="date"
-            icon="calendar_month"
-            value={profileData.dob} 
-            onChange={(e) => handleUpdateField('dob', e.target.value)} 
-          />
+          <TextField label="Date of Birth" id="dob" type="date" icon="calendar_month" value={profileData.dob} onChange={(e) => handleUpdateField('dob', e.target.value)} />
+          <SelectField label="State of Residence" id="state" options={stateOptions} value={profileData.state} onChange={(e) => handleUpdateField('state', e.target.value)} />
 
-          <SelectField 
-            label="State of Residence"
-            id="state"
-            options={stateOptions}
-            value={profileData.state}
-            onChange={(e) => handleUpdateField('state', e.target.value)}
-          />
-
-          {/* CTA Button */}
           <div className="pt-4">
-            <button 
-              type="submit"
-              className="w-full h-14 bg-primary text-on-primary font-body-lg text-body-lg font-bold rounded-xl active:scale-[0.98] transition-transform flex items-center justify-center gap-2 shadow-lg shadow-primary/10 hover:opacity-90"
-            >
+            <button type="submit" className="w-full h-14 bg-primary text-on-primary font-body-lg text-body-lg font-bold rounded-xl active:scale-[0.98] transition-transform flex items-center justify-center gap-2 shadow-lg shadow-primary/10 hover:opacity-90">
               Save and Continue
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
@@ -120,22 +86,16 @@ const ProfilePage = () => {
         </form>
 
         {/* Trust Anchor */}
-        <div className="mt-8 p-4 bg-surface-container rounded-xl border border-surface-container-high flex items-start gap-3">
-          <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>
-            verified_user
-          </span>
+        <div className="p-4 bg-surface-container rounded-xl border border-surface-container-high flex items-start gap-3">
+          <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
           <div className="space-y-1">
             <h4 className="font-label-md text-label-md text-on-surface">Secure Identity</h4>
-            <p className="font-label-sm text-label-sm text-on-surface-variant">
-              Your personal data is encrypted and never shared with unauthorized third parties.
-            </p>
+            <p className="font-label-sm text-label-sm text-on-surface-variant">Your personal data is encrypted and never shared with unauthorized third parties.</p>
           </div>
         </div>
 
-      </main>
-
-      <BottomNavBar activeTab="Profile" />
-    </div>
+      </div>
+    </AppLayout>
   );
 };
 
