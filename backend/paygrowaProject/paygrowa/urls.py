@@ -1,13 +1,11 @@
-from django.contrib import admin
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-
-from paygrowa import views
+from django.urls import path
+from .views import RegisterView, TaskViewSet, SubmissionViewSet, SubmitTaskView, TransactionViewSet
 
 urlpatterns = [
-    path('register/', views.UserViewSet.as_view({'post': 'create'}), name='register'),
-    path('profile/', views.ProfileViewSet.as_view({'get': 'list', 'post': 'create'}), name='profile'),  
-    path('tasks/', views.TaskViewSet.as_view({'get': 'list'}), name='tasks'),
-    path('assignments/', views.TaskAssignmentViewSet.as_view({'get': 'list', 'post': 'create'}), name='assignments'),
-    path('submit-task/', views.SubmitTaskViewSet.as_view({'get': 'list', 'post': 'create'}), name='submit-task'),
+    path('register/',     RegisterView.as_view(),                                          name='register'),
+    path('tasks/',        TaskViewSet.as_view({'get': 'list'}),                            name='tasks'),
+    path('tasks/<int:pk>/', TaskViewSet.as_view({'get': 'retrieve'}),                      name='task-detail'),
+    path('submissions/',  SubmissionViewSet.as_view({'get': 'list'}),                      name='submissions'),
+    path('submit-task/',  SubmitTaskView.as_view(),                                        name='submit-task'),
+    path('transactions/', TransactionViewSet.as_view({'get': 'list'}),                     name='transactions'),
 ]

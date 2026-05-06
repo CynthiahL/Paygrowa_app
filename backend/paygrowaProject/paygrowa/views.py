@@ -1,43 +1,50 @@
-from rest_framework import viewsets, permissions
-from django.utils import timezone
-from .models import User, UserProfile, Task, TaskAssignment, Payment
-from .serializers import *
+from rest_framework import viewsets, permissions, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import User, Task, Submission, Transaction
+from .serializers import UserSerializer, TaskSerializer, SubmissionSerializer, TaskSubmitSerializer, TransactionSerializer
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+
+class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
-class ProfileViewSet(viewsets.ModelViewSet):
-    serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 class TaskViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
+    queryset = Task.objects.filter(status='active')
 
-    def get_queryset(self):
-        return Task.objects.filter(is_active=True).exclude(taskassignment__user=self.request.user)
 
-class TaskAssignmentViewSet(viewsets.ModelViewSet):
-    serializer_class = TaskAssignmentSerializer
+class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SubmissionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return TaskAssignment.objects.filter(user=self.request.user)
+        return Submission.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
-class SubmitTaskViewSet(viewsets.ModelViewSet):
-    serializer_class = TaskSubmissionSerializer
+class SubmitTaskView(APIView):
+    """POST /api/submit-task/ — submit answers, credit wallet, record transaction."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = TaskSubmitSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        result = serializer.save(user=request.user)
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = TransactionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return TaskAssignment.objects.filter(user=self.request.user, status='started')
+        return Transaction.objects.filter(user=self.request.user)
