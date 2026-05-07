@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,18 +129,24 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS settings - development 
-CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOW_ALL_ORIGINS = True
 
 #cors settings - production
-# CORS_ALLOWED_ORIGINS = [
-#     "https://your-production-domain.com",
-# ]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://paygrowa-app.onrender.com",
+    "http://localhost:8000",
+]
 
 
 # JWT settings
@@ -148,6 +155,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 from datetime import timedelta
 
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -160,3 +169,11 @@ SIMPLE_JWT = {
 
 
 AUTH_USER_MODEL = 'paygrowa.User'
+
+#Spectacular settings for API documentation
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Paygrowa API',
+    'DESCRIPTION': 'API documentation for Paygrowa application',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
