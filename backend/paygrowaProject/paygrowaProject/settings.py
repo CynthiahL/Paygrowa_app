@@ -31,7 +31,13 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
-ALLOWED_HOSTS = []
+#render for hosting
+
+ALLOWED_HOSTS = [
+
+    "https://paygrowa-app.onrender.com",
+    "http://localhost:8000",
+]
 
 
 # Application definition
