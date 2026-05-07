@@ -34,9 +34,8 @@ DEBUG = os.getenv('DEBUG') == 'True'
 #render for hosting
 
 ALLOWED_HOSTS = [
-
-    "https://paygrowa-app.onrender.com",
-    "http://localhost:8000",
+    "paygrowa-app.onrender.com",
+    "localhost",
 ]
 
 
