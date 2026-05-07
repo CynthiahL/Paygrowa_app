@@ -18,6 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #env configuration 
 from dotenv import load_dotenv
 import os
+import dj_database_url
 
 load_dotenv()
 
@@ -30,7 +31,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
-ALLOWED_HOSTS = []
+#render for hosting
+
+ALLOWED_HOSTS = [
+    "paygrowa-app.onrender.com",
+    "localhost",
+]
 
 
 # Application definition
@@ -52,6 +58,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,10 +94,7 @@ WSGI_APPLICATION = 'paygrowaProject.wsgi.application'
 #.env configuration for database
 
 DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.getenv('DB_NAME', BASE_DIR / 'db.sqlite3'),
-    }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3'))
 }
 
 
@@ -130,33 +134,51 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS settings - development 
-CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOW_ALL_ORIGINS = True
 
 #cors settings - production
-# CORS_ALLOWED_ORIGINS = [
-#     "https://your-production-domain.com",
-# ]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://paygrowa-app.onrender.com",
+    "http://localhost:8000",
+]
 
 
 # JWT settings
-#from datetime import timedelta
-#SIMPLE_JWT = {
-#    'ACCESS TOKEN_LIFETIME': timedelta(minutes=60),
-#    'REFRESH TOKEN_LIFETIME': timedelta(days=1),
-#}
 
 
-# REST Framework settings
+from datetime import timedelta
+
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+
 AUTH_USER_MODEL = 'paygrowa.User'
+
+#Spectacular settings for API documentation
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Paygrowa API',
+    'DESCRIPTION': 'API documentation for Paygrowa application',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}

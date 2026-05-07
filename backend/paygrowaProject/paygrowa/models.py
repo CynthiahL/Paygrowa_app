@@ -38,13 +38,13 @@ class User(AbstractUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []   
 
-    #create a wallet for each user upon creation
-def save(self, *args, **kwargs):
-    with transaction.atomic():
-        is_new = self._state.adding
-        super().save(*args, **kwargs)
-        if is_new:
-            Wallet.objects.get_or_create(user=self)
+    #create a wallet for each user upon creation with default balance of 0
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            is_new = self._state.adding
+            super().save(*args, **kwargs)
+            if is_new:
+                Wallet.objects.get_or_create(user=self)
 
 
     def __str__(self):
@@ -84,6 +84,13 @@ class Task(models.Model):
     def __str__(self):
         return self.title
 
+#sample survey model to include questions 
+class Survey(models.Model):
+    task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='survey')
+    questions = models.JSONField()
+    def __str__(self):
+        return f"Survey for {self.task.title}"
+
 #task assignment model
 class TaskAssignment(models.Model):
     STATUSS = [
@@ -105,16 +112,16 @@ class TaskAssignment(models.Model):
     task = models.ForeignKey(Task,on_delete=models.CASCADE)
 
     status = models.CharField(max_length=20, choices=STATUSS, default="assigned")
+    survey_response = models.JSONField(null=True, blank=True)
 
     assigned_at = models.DateTimeField(auto_now_add=True)
     started_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
 
-    screenshot = models.ImageField(upload_to="proofs/", null=True, blank=True)
     completion_code = models.CharField(max_length=100, null=True, blank=True)#
 
     flagged = models.BooleanField(default=False)
-    score = models.IntegerField(default=0)
+    validation_score = models.IntegerField(default=0)
     review_reason = models.TextField(blank=True, null=True)
 
     class Meta:
