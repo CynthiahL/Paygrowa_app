@@ -2,14 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  min-height: max(884px, 100dvh);
-}
 
 
 body {
   @apply bg-background text-on-surface;
-  min-height: 100vh;
 }
 
 @keyframes fadeInDown {

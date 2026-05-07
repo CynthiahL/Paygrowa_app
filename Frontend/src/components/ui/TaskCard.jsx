@@ -1,47 +1,54 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const TaskCard = ({id, category, title, status, price, duration }) => {
-  // Configuration maps to dynamically assign styles based on the task data
-  const navigate = useNavigate()
-  const categoryConfig = {
-    'Survey': 'text-on-tertiary-container bg-tertiary-fixed',
-    'App Test': 'text-on-primary-fixed-variant bg-primary-fixed',
-    'Data Entry': 'text-on-secondary-fixed-variant bg-secondary-fixed',
-  };
-
-  const statusDotConfig = {
-    'Available': 'bg-secondary',
-    'Pending': 'bg-primary-fixed-dim',
-    'Done': 'bg-secondary',
-  };
-
-  // Fallbacks just in case the backend sends a new category we haven't styled yet
-  const categoryStyle = categoryConfig[category] || 'text-on-surface-variant bg-surface-variant';
-  const dotStyle = statusDotConfig[status] || 'bg-outline';
+const TaskCard = ({ task }) => {
+  const navigate = useNavigate();
   
-  // The design slightly dims pending tasks
-  const opacityClass = status === 'Pending' ? 'opacity-75' : '';
+  // Only allow clicking if the task is actually available
+  const isAvailable = task.status === 'Available';
+
+  const handleClick = () => {
+    if (isAvailable) {
+      navigate(`/task/${task.id}`);
+    }
+  };
+
+  // Status badge styling logic
+  const getStatusStyles = (status) => {
+    switch(status) {
+      case 'Available': return 'bg-primary-fixed text-primary-container';
+      case 'Pending': return 'bg-surface-container-high text-on-surface-variant';
+      case 'Done': return 'bg-secondary-container text-on-secondary-container';
+      default: return 'bg-surface-container text-outline';
+    }
+  };
 
   return (
-    <div
-     onClick={() => navigate(`/task/${id}`)}
-     className={`bg-white border border-outline-variant rounded-xl p-4 flex justify-between items-center hover:border-primary transition-colors cursor-pointer ${opacityClass}`}>
-      <div className="space-y-1">
-        <span className={`font-label-sm text-label-sm px-2 py-0.5 rounded ${categoryStyle}`}>
-          {category}
-        </span>
-        <h4 className="font-body-md text-body-md font-semibold text-primary">
-          {title}
-        </h4>
-        <div className="flex items-center gap-1.5">
-          <span className={`w-1.5 h-1.5 rounded-full ${dotStyle}`}></span>
-          <p className="font-label-sm text-label-sm text-on-surface-variant">{status}</p>
+    <div 
+      onClick={handleClick}
+      className={`p-md border rounded-xl transition-all duration-200 ${
+        isAvailable 
+          ? 'bg-white border-[#E2E8F0] hover:border-primary-container cursor-pointer active:scale-[0.98] shadow-sm' 
+          : 'bg-surface-container-lowest border-outline-variant/30 cursor-not-allowed opacity-80'
+      }`}
+    >
+      <div className="flex justify-between items-start">
+        <div className="space-y-1">
+          <span className={`px-2 py-1 rounded font-label-sm text-[10px] uppercase tracking-wider ${getStatusStyles(task.status)}`}>
+            {task.category}
+          </span>
+          <h3 className="font-h3 text-on-surface leading-tight mt-1">{task.title}</h3>
+          
+          <div className="flex items-center gap-xs mt-2">
+            <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-secondary' : 'bg-outline-variant'}`}></span>
+            <span className="font-label-sm text-outline">{task.status}</span>
+          </div>
         </div>
-      </div>
-      <div className="text-right">
-        <p className="font-body-md text-body-md font-bold text-primary">{price}</p>
-        <p className="font-label-sm text-label-sm text-on-surface-variant">{duration}</p>
+        
+        <div className="text-right">
+          <p className={`font-h3 ${isAvailable ? 'text-primary' : 'text-outline'}`}>{task.reward}</p>
+          <p className="font-body-sm text-outline">{task.estimatedTime}</p>
+        </div>
       </div>
     </div>
   );

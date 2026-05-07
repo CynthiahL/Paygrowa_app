@@ -1,8 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-// Import our pages
+// Public Pages
+import LandingPage from './pages/Landing/LandingPage';
 import LoginPage from './pages/Login/LoginPage';
+import RegisterPage from './pages/Register/RegisterPage';
+
+// Authenticated Pages
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import TaskDetailPage from './pages/TaskDetail/TaskDetailPage';
@@ -18,17 +22,16 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Default route redirects to login */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        
-        {/* Our App Routes */}
+        {/* PUBLIC ROUTES */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        
+        {/* AUTHENTICATED ROUTES (In a real app, these would be protected) */}
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        
-        {/* Notice the :id - this makes the URL dynamic so we can load specific tasks */}
         <Route path="/task/:id" element={<TaskDetailPage />} />
-
+        
         <Route path="/survey/1" element={<SurveyQuestion1Page />} />
         <Route path="/survey/2" element={<SurveyQuestion2Page />} />
         <Route path="/survey/3" element={<SurveyQuestion3Page />} />
@@ -38,8 +41,8 @@ function App() {
         
         <Route path="/task-success" element={<TaskSuccessPage />} />
         
-        {/* Catch-all route for 404s (optional but good practice) */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        {/* Fallback route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

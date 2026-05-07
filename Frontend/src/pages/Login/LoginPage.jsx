@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Logo from '../../components/layout/Logo';
 import Footer from '../../components/layout/Footer';
 import Input from '../../components/ui/Input';
@@ -86,7 +86,7 @@ const LoginPage = () => {
           <div className="text-center">
             <p className="font-body-sm text-body-sm text-on-surface-variant">
               Don't have an account?{' '}
-              <a className="text-primary font-semibold hover:underline" href="#">Register now</a>
+              <Link to="/register" className="text-primary font-semibold hover:underline">Register now</Link>
             </p>
           </div>
         </form>

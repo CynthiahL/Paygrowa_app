@@ -8,10 +8,11 @@ import RadioToggle from '../../components/ui/RadioToggle';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+
+  const savedName = localStorage.getItem('userFirstName') || 'Emmanuel';
   
   const [profileData, setProfileData] = useState({
-    firstName: 'Emmanuel',
-    lastName: 'Okonkwo',
+    firstName: savedName,
     gender: 'male',
     dob: '1995-05-12',
     state: 'lagos'
@@ -31,7 +32,13 @@ const ProfilePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Saving profile data:", profileData);
+    
+    // 2. SAVE THE NEW NAME TO LOCAL STORAGE
+    localStorage.setItem('userFirstName', profileData.firstName);
+    
+    // 3. SHOW SUCCESS MESSAGE & ROUTE TO DASHBOARD
+    alert("Profile updated successfully!");
+    navigate('/dashboard');
   };
 
   return (
