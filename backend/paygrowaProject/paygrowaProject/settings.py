@@ -18,6 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #env configuration 
 from dotenv import load_dotenv
 import os
+import dj_database_url
 
 load_dotenv()
 
@@ -87,10 +88,7 @@ WSGI_APPLICATION = 'paygrowaProject.wsgi.application'
 #.env configuration for database
 
 DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.getenv('DB_NAME', BASE_DIR / 'db.sqlite3'),
-    }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3'))
 }
 
 
@@ -145,18 +143,20 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 
 # JWT settings
-#from datetime import timedelta
-#SIMPLE_JWT = {
-#    'ACCESS TOKEN_LIFETIME': timedelta(minutes=60),
-#    'REFRESH TOKEN_LIFETIME': timedelta(days=1),
-#}
 
 
-# REST Framework settings
+from datetime import timedelta
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
 
 AUTH_USER_MODEL = 'paygrowa.User'
