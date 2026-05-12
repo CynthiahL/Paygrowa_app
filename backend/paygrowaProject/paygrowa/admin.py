@@ -18,19 +18,37 @@ class SurveyInlineForm(forms.ModelForm):
                 'rows': 12,
                 'cols': 100,
                 'placeholder': '''[
-                     {"id":"cc_q1","question":"Age?","type":"number","required":true},
-                    {"id":"cc_q2","question":"Gender?","type":"single_choice","options":["Male","Female"],"required":true}
+                    {
+                        "id": "cc_q1",
+                        "question": "Age",
+                        "type": "number",
+                        "required": True
+                        },
+                    {
+                        "id": "cc_q2",
+                        "question": "Gender",
+                        "type": "single_choice",
+                        "options": ["Male", "Female"],
+                        "required": True
+                        },
                 ]'''
             })
         }
 
     def clean_questions(self):
-        data = self.cleaned_data['questions']
-        try:
-            parsed = json.loads(data)
-        except Exception:
-            raise forms.ValidationError("Invalid JSON format for questions.")
-        return parsed
+        data = self.cleaned_data.get('questions')
+        
+        if isinstance(data, (list, dict)):
+            return data
+            
+        
+        if isinstance(data, str):
+            try:
+                return json.loads(data)
+            except (ValueError, TypeError):
+                raise forms.ValidationError("Invalid JSON format for questions.")
+        
+        return data
         
 class SurveyInline(admin.StackedInline):
     model = Survey

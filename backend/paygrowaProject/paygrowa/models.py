@@ -97,15 +97,7 @@ class TaskAssignment(models.Model):
         ("assigned","Assigned"),
         ("started","Started"),
         ("submitted","Submitted"),
-        ("under_review","Under Review"),
-        ("verified","Verified"),
-        ("paid","Paid"),
-        ("rejected","Rejected"),
-        ("opt_out","Opted Out"),
-        ("pending_review","Pending Review"),
-        ("queued","Payment Queued"),
-        ("void","Void"),
-        ("approved","Approved")
+        ("opt_out","Opted Out")
     ]
 
     user = models.ForeignKey(User,on_delete=models.CASCADE)
